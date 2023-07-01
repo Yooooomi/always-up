@@ -6,6 +6,11 @@ const wait = (ms: number) => new Promise((res) => setTimeout(res, ms));
 async function boot(orchestrator: Orchestrator) {
   await orchestrator.init();
 
+  let interval = Number(process.env.CHECK_INTERVAL);
+  if (isNaN(interval)) {
+    interval = 60;
+  }
+
   while (true) {
     const items = await orchestrator.getEnabledItems();
     for (const item of items) {
@@ -16,7 +21,7 @@ async function boot(orchestrator: Orchestrator) {
       console.log(`[Manager]: ${item.id} is not healthy, restarting`);
       await orchestrator.handleRestartAndDependencies(item);
     }
-    await wait(60 * 1000);
+    await wait(interval * 1000);
   }
 }
 
