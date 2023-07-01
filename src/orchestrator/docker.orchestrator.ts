@@ -81,10 +81,7 @@ export class DockerOrchestrator extends Orchestrator {
       this.log(`[WARN]: ${item.id} has no health check`);
       return true;
     }
-    return (
-      (infos?.State.Running && infos?.State.Health?.Status === "healthy") ||
-      infos.State.Health.Status === "starting"
-    );
+    return infos?.State.Health?.Status !== "unhealthy";
   }
 
   async handleRestartAndDependencies(item: Item) {
