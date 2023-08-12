@@ -6,10 +6,12 @@ const wait = (ms: number) => new Promise((res) => setTimeout(res, ms));
 async function boot(orchestrator: Orchestrator) {
   await orchestrator.init();
 
-  let interval = Number(process.env.CHECK_INTERVAL);
+  let interval = +(process.env.CHECK_INTERVAL ?? "60");
   if (isNaN(interval)) {
     interval = 60;
   }
+
+  console.log(`Looping every ${interval} seconds`);
 
   while (true) {
     const items = await orchestrator.getEnabledItems();
