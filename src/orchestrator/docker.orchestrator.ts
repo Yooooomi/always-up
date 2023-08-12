@@ -104,6 +104,12 @@ export class DockerOrchestrator extends Orchestrator {
         if (!container) {
           continue;
         }
+        const infos = await container.inspect();
+        if (infos.HostConfig.AutoRemove) {
+          this.log(
+            `Container ${item.id} is marked as auto-remove (--rm), this will likely cause issues when trying to start it again after shutdown`
+          );
+        }
         this.log(`Stopping container ${item.id}`);
         await container.stop({ t: this.environment.getShutdownTimeout() });
       }
