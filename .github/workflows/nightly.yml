@@ -5,8 +5,7 @@ on:
   push:
     paths:
       - .github/workflows/nightly.yml
-      - client/**
-      - server/**
+      - src/**
     branches:
       - master
 
