@@ -1,17 +1,15 @@
 import { DockerOrchestrator } from "./orchestrator/docker.orchestrator";
 import { Orchestrator } from "./orchestrator/orchestrator";
+import { Environment } from "./tools/env";
+import { ProcessEnvironment } from "./tools/process.env";
 
 const wait = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
-async function boot(orchestrator: Orchestrator) {
+async function boot(orchestrator: Orchestrator, environment: Environment) {
   await orchestrator.init();
 
-  let interval = +(process.env.CHECK_INTERVAL ?? "60");
-  if (isNaN(interval)) {
-    interval = 60;
-  }
-
-  console.log(`Looping every ${interval} seconds`);
+  const interval = environment.getInterval();
+  console.log(`[Manager]: Looping every ${interval} seconds`);
 
   while (true) {
     const items = await orchestrator.getEnabledItems();
@@ -27,4 +25,5 @@ async function boot(orchestrator: Orchestrator) {
   }
 }
 
-boot(new DockerOrchestrator());
+const env = new ProcessEnvironment();
+boot(new DockerOrchestrator(env), env);

@@ -1,10 +1,15 @@
 import { Item } from "../item/item";
 import { Dependency } from "../tools/dependency";
+import { Environment } from "../tools/env";
 import { Orchestrator } from "./orchestrator";
-import Docker from "dockerode";
+import Docker, { Container } from "dockerode";
 
 export class DockerOrchestrator extends Orchestrator {
   private instance: Docker | undefined;
+
+  constructor(private readonly environment: Environment) {
+    super();
+  }
 
   async init() {
     this.instance = new Docker({ socketPath: "/var/run/docker.sock" });
@@ -100,7 +105,7 @@ export class DockerOrchestrator extends Orchestrator {
           continue;
         }
         this.log(`Stopping container ${item.id}`);
-        await container.stop({ t: 1 });
+        await container.stop({ t: this.environment.getShutdownTimeout() });
       }
     }
 
