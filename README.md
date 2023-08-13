@@ -16,6 +16,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       CHECK_INTERVAL: 60
+      SHUTDOWN_TIMEOUT: 5
 ```
 
 
